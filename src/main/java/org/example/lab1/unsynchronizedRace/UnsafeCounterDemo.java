@@ -1,4 +1,4 @@
-package org.example.lab1.withSynchronized;
+package org.example.lab1.unsynchronizedRace;
 
 public class UnsafeCounterDemo {
     public static int counter = 0;
