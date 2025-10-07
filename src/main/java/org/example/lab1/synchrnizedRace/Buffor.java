@@ -2,18 +2,22 @@ package org.example.lab1.synchrnizedRace;
 
 public class Buffor {
 
-    public synchronized void increment() {
+    public synchronized boolean increment() {
         if(SynchronizedRace.counter == 0) {
-            for(int i = 0; i < 10; i++) {
-                SynchronizedRace.counter++;
-            }
+            SynchronizedRace.counter++;
+            return true;
+        } else {
+            return false;
         }
     }
 
-    public synchronized void decrement() {
+    public synchronized boolean decrement() {
         if(SynchronizedRace.counter > 0) {
             SynchronizedRace.counter--;
-        }
+            return true;
+        } else {
+            return false;
+    }
     }
 
     public void print() {
