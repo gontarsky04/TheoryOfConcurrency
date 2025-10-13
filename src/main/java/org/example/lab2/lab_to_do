@@ -1,0 +1,36 @@
+- Próbujemy synchronizować (synchronized) poprzedni kod z jednym konsumentem i jednym producentem.
+- Dlaczego to działa lub nie? Czy to załatwi nam poprawność działania?
+- Wymyślić przebieg działania, który pokaże, że może się to wysypać (chyba)
+- Czy monitor w Javie działa jak taki teoretyczny monitor?
+    Nie, jest kilka różnic:
+    1) W książce napisali, że jeśli wątek/proces wykona notify() na jakiejś zmiennej i nie jest to
+       ostatni instrukcja w monitorze, to ten proces/wątek wychodzi poza monitor i czeka w kolejce,
+       a do monitora wchodzi wtedy inny proces/wątek.
+       Z kolei w Javie wygląda to tak, że pomimo instrukcji notify() niebędącej ostatnią instukcją
+       w monitorze, to wątek, który ją wykonał i tak przejdzie do końca monitora wykonując pozostałe
+       jeszcze instrukcje.
+    2) W teoretycznym monitorze są trzy różne rodzaje kolejek:
+       - kolejka wątków wejściowych
+       - kolejki związane z daną zmienną, na której została wykonana operacja wait()
+       - kolejki związane z daną zmienną, na której została wykonana operacja notify() (w książce
+         operacja signal() ale to już starodawne) - w rzeczywistości jest to odwrócona kolejka czyli stos
+        W monitorze w Javie jest tylko jedna kolejka, a właściwie to nawet nie jest kolejka, bo gdy jeden
+        proces/ wątek wyjdzie z monitora, to wejdzie do niego ten wątek, który będzie szybszy, więc nie ma
+        zachowanego żadnego porządku
+    3) W Javie istnieje takie coś, że wątki, które w teorii próbujemy (albo robimy to specjalnie, nie polecam)
+       zagłodzić, czyli uśpić za pomocą wait() i nigdy ich nie wybudzamy, po jakimś czasie same się wybudzają
+       bez użycia notify() i innych (jest to tak zwane spurious wakeup). Mówiła coś, żeby znaleźć to w dokumentacji
+       Javy i chyba nawet na 2 plusy. Jakiś typ powiedział, że jest to prawdopodobnie zabezpieczenie na wypadek,
+       gdyby programista zapomniał o tych wątkach (a że ona uważa tak samo to dostał dwa plusy). W dokumentacji
+       jest o tym wspomnianiane.
+       Oto link: https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
+       Patrz: sekcja "wait".
+- Mówiła coś o słowie kluczowym volatile (to coś niby jakoś wpływa na synchronizacje, więc poczytajcie o tym,
+ale podobno nie załatwia nam problemu naszej synchronizacji wątków (czemu? nie wiem)
+- Kazała również spróbować wytłumaczyć na podstawie budowy komputera i pamięci jakiś brak synchronizacji. Głównie chodziło
+o to, że jak uruchamiamy program, to wątki tworzą kopie pamięci programu (czyli tworzą swoje cache). Zakładając,
+że program główny ma zmienną count = 0, pierwszy wątek skopiuje to sobie do swojego cache, ale zanim zdąży wykonać
+inkrementację, to drugi wątek również skopiuje to do swojego cache i u niego też będzie wartość count = 0. Teraz pierwszy wątek
+inkrementuje, więc zmienia wartość count z 0 na 1 i zapisuje już do pamięci programu (tej z której kopiował) wartość 1.
+Drugi wątek działa na tym, co skopiował, więc u niego count nadal ma 0, wówczas on dekrementuje count z 0 na -1 i nadpisuje
+do pamięci programu. Dochodzimy do sytuacji, że mieliśmy dostać 0, a dostajemy -1 więc taki chuj.

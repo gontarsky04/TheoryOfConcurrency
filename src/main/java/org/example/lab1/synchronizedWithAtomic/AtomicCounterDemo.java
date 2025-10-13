@@ -1,5 +1,7 @@
 package org.example.lab1.synchronizedWithAtomic;
 
+// ma być po jednym producencie i jednym konsumencie
+
 public class AtomicCounterDemo {
     public static void main(String[] args) throws InterruptedException {
         int numOfThreads = 10;

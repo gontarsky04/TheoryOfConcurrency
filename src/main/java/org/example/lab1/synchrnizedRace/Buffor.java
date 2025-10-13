@@ -2,7 +2,7 @@ package org.example.lab1.synchrnizedRace;
 
 public class Buffor {
 
-    public synchronized boolean increment() {
+    public boolean increment() {
         if(SynchronizedRace.counter == 0) {
             SynchronizedRace.counter++;
             return true;
@@ -11,7 +11,7 @@ public class Buffor {
         }
     }
 
-    public synchronized boolean decrement() {
+    public boolean decrement() {
         if(SynchronizedRace.counter > 0) {
             SynchronizedRace.counter--;
             return true;
