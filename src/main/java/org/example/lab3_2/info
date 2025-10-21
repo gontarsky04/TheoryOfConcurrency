@@ -1,0 +1,8 @@
+zagłodzenie - wątek na tyle długo nie dostaje dostępu do sekcji krytycznej, że jest to nieakceptowalne dla programisty
+
+jeżeli zależy nam na zużywaniu zasobów - rozwiązanie poprawne
+
+-- MP NC WB lock() unlock()
+
+-- jeden konsument duży (pobiera połowe bufora), reszta konsumentów małe wartości konsumpcji
+    zrobić info na temat tego, jak często największy konsument dostaje zasoby
